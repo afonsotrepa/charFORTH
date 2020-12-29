@@ -179,24 +179,16 @@ header immediate "p", compile
 	cmp cl, ' '
 	je .ign
 
-	;check if hex number and convert
+	;check if dec number and convert
 	cmp rax, 0
 	jne .wrd
 
-	cmp rcx, 'F'
-	ja .err
-	cmp rcx, 'A'
-	Jb .dec
-	sub rcx, 'A'-10
-	jmp .lit
-
-.dec: 	cmp rcx, '9'
+ 	cmp rcx, '9'
 	ja .err
 	cmp rcx, '0'
 	jb .err
 	sub rcx, '0'
-
-.lit: 	;compile literal
+ 	;compile literal
 	dpush rcx
 	call literal
 	ret
@@ -269,19 +261,11 @@ header "i", interpret
 	je .ign
 	dpush rax
 
- 	;check if hex number and convert
+ 	;check if dec number and convert
 	cmp rax, 0
 	jne .ex
-	cmp rcx, 'F'
-	ja .err
-	cmp rcx, 'A'
-	Jb .dec
-	sub rcx, 'A'-10
-	dpop rax
-	dpush rcx
-	ret
 
-.dec: 	cmp rcx, '9'
+ 	cmp rcx, '9'
 	ja .err
 	cmp rcx, '0'
 	jb .err

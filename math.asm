@@ -93,41 +93,24 @@ header "^", bit_xor
 	ret
 
 
-digits: db "0123456789ABCDEF"
-
 header ".", dot ;unsigned
-	push rbx
-	push r12
-	mov r12, 0
+	
+.loop: 	call dup
+	dpush 10 ;base
+	call mod
+	
+	dpush '0'
+	call sum
+	call emit
+
+	dpush 10
+	call divide
+
+	call dup
+	dpop rax
+	cmp rax, 0
+	jne .loop
 
 	dpop rax
-	mov rcx, 60
-
-.loop: 	mov rbx, rax
-	shr rbx, cl
-	and rbx, 1111b
-	;check if leading zero
-	cmp rcx, 0 ;do emit if it's the last 0
-	je .emit
-	or r12, rbx
-	cmp r12, 0
-	je .again
-
-.emit: 	mov bl, [rbx+digits]
- 	push rcx
-	push rax
-	dpush rbx
-	call emit
-	pop rax
-	pop rcx
-
-	cmp rcx, 0
-	je .end
-
-.again: sub rcx, 4
-	jmp .loop
-
-.end: 	pop r12
-	pop rbx
 	ret
 
