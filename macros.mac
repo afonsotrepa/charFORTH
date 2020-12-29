@@ -1,0 +1,22 @@
+%ifndef MACROS_MAC
+	%define MACROS_MAC
+
+	%macro 	dpush 1
+		mov qword [rbp], %1
+		add rbp, 8
+	%endmacro
+	%macro dpop 1
+		sub rbp, 8
+		mov qword %1, [rbp]
+	%endmacro
+
+	%define link 0
+	%macro 	header 2
+		%%xt: 	db %1
+		dq link
+		%define link %%xt
+		%2:
+	%endmacro
+
+	%define immediate  0x80 |
+%endif
