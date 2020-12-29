@@ -94,23 +94,38 @@ header "^", bit_xor
 
 
 header ".", dot ;unsigned
-	
+	push r12
+	mov r12, 0
+
 .loop: 	call dup
 	dpush 10 ;base
 	call mod
 	
-	dpush '0'
-	call sum
-	call emit
+	dpop rax
+	add ax, '0'
+	;save byte on the stack to be printed letter
+	sal ax, 8
+	push ax 
+	add rsp, 1
 
 	dpush 10
 	call divide
 
+	add r12, 1
 	call dup
 	dpop rax
 	cmp rax, 0
 	jne .loop
-
 	dpop rax
-	ret
 
+
+	;write digits saved on the stack
+	mov rax, 1 ;sys_write
+	mov rdi, 1 ;file descriptor
+	mov rsi, rsp ;buf
+	mov rdx, r12 ;len
+	syscall
+
+	add rsp, r12
+	pop r12
+	ret
