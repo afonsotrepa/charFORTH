@@ -310,9 +310,52 @@ header immediate "?", when
 	sub rcx, rax
 	;write the difference for the je instrunction
 	sub rax, 1
-	mov byte [rax], cl ;difference can not be over 255
+	mov byte [rax], cl ;difference can not be over 127
 
 	ret
+
+header immediate "W", while
+	mov rax, [heapptr]
+	dpush rax ;push for "repeat" word
+        ;write: sub rbp, 8
+	mov dword [rax], 0x08ED8348
+	add rax, 4
+	;write: mov rax, qword [rbp]
+	mov dword [rax], 0x00458B48
+	add rax, 4
+	;write: cmp rax, 0
+	mov dword [rax], 0x00F88348
+	add rax, 4
+	;write: je 0x00000000 relative jump forward (32 bit version)
+	mov word [rax], 0x840F
+	add rax, 2
+	add rax, 4 ;space for address
+
+	mov [heapptr], rax
+	ret
+
+header immediate "R", repeat
+	mov rax, [heapptr]
+	dpop rcx ;address from while
+	push rcx
+	;write: jmp adrs
+	sub rcx, rax ;calculate relative jump
+	sub rcx, 5
+	mov byte [rax], 0xE9
+	add rax, 1
+	mov dword [rax], ecx
+	add rax, 4
+	mov [heapptr], rax
+
+	pop rcx
+	;write jump address at the while
+	sub rax, rcx
+	sub rax, 18
+	add rcx, 14
+	mov dword [rcx], eax
+
+	ret
+
 
 
 _start: mov rbp, dstack ;init stack pointer
