@@ -95,7 +95,10 @@ header "^", bit_xor
 
 header ".", dot ;unsigned
 	push r12
-	mov r12, 0
+	mov r12, 1
+	mov ax, 0x2000
+	push ax
+	add rsp, 1
 
 .loop: 	call dup
 	dpush 10 ;base
@@ -110,8 +113,8 @@ header ".", dot ;unsigned
 
 	dpush 10
 	call divide
-
 	add r12, 1
+
 	call dup
 	dpop rax
 	cmp rax, 0
