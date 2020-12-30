@@ -106,7 +106,7 @@ header ".", dot ;unsigned
 	
 	dpop rax
 	add ax, '0'
-	;save byte on the stack to be printed letter
+	;save byte on the stack to be printed latter
 	sal ax, 8
 	push ax 
 	add rsp, 1
