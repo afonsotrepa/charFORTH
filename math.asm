@@ -65,7 +65,7 @@ header ">", greater
 .t: 	dpush -1
 	ret
 
-header "n", invert
+header "i", invert
 	dpop rax
 	not rax
 	dpush rax
@@ -89,6 +89,17 @@ header "^", bit_xor
 	dpop rax
 	dpop rcx
 	xor rax, rcx
+	dpush rax
+	ret
+
+header "n", logical_not
+	dpop rax
+	cmp rax, 0
+	je .t
+	mov rax, 0
+	dpush rax
+	ret
+.t: 	mov rax, -1
 	dpush rax
 	ret
 
