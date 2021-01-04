@@ -33,9 +33,9 @@ header "k", key
 	mov rdx, 1 ;len
 	syscall
 
-	pop rax
-	and rax, 0xFF
-	dpush rax
+	pop rcx
+	and rcx, 0xFF
+	dpush rcx
 	ret
 
 header "d", dup
@@ -51,9 +51,23 @@ header "s", swap
 	dpush rcx
 	ret
 
+header "r", rot
+	dpop rax
+	dpop rcx
+	dpop rsi
+
+	dpush rcx
+	dpush rax
+	dpush rsi
+	ret
+
 header "'", tick
 	call key
 	dpop rcx
+
+	;check for end of file/transmision
+	cmp rax, 0
+	je .bye
 
 	mov rax, [dict]
 
@@ -70,6 +84,8 @@ header "'", tick
 
 .end: 	dpush rax
 	ret
+
+.bye: 	call bye
 
 header "x", execute
 	dpop rax ;xt
@@ -356,6 +372,9 @@ header immediate "R", repeat
 
 	ret
 
+header "X", exit
+	pop rax
+	ret
 
 
 _start: mov rbp, dstack ;init stack pointer
