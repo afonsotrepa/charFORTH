@@ -61,6 +61,10 @@ header "r", rot
 	dpush rsi
 	ret
 
+header "D", drop
+	dpop rax
+	ret
+
 header "'", tick
 	call key
 	dpop rcx
@@ -433,6 +437,11 @@ header immediate "T", then
 	mov dword [rcx], eax
 
 	ret
+
+header "a", allot
+	dpop rax
+	add [heapptr], rax
+	ret
 	
 	
 
@@ -448,7 +457,7 @@ _start: mov rbp, dstack ;init stack pointer
 	jmp .repl
 	
 section .bss
-heap: 	resb 8192
+heap: 	resb 8192*2
 dstack: resq 256
 section .data
 dict: 	dq link
