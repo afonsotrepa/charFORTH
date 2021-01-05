@@ -376,6 +376,65 @@ header "X", exit
 	pop rax
 	ret
 
+header "m", imm ;make last defined word immediate
+	mov rax, [dict]
+	mov cl, byte [rax]
+	or cl, immediate 0
+	mov byte [rax], cl
+	ret
+
+header immediate "I", if
+	mov rax, [heapptr]
+        ;write: sub rbp, 8
+	mov dword [rax], 0x08ED8348
+	add rax, 4
+	;write: mov rax, qword [rbp]
+	mov dword [rax], 0x00458B48
+	add rax, 4
+	;write: cmp rax, 0
+	mov dword [rax], 0x00F88348
+	add rax, 4
+	;write: je 0x00000000 relative jump forward (32 bit version)
+	mov word [rax], 0x840F
+	add rax, 2
+	dpush rax ;push for "else" word
+	add rax, 4 ;space for address
+
+	mov [heapptr], rax
+	ret
+
+header immediate "E", else
+	mov rax, [heapptr]
+	;write rel32 for the "if" jump
+	push rax
+	dpop rcx
+	mov rsi, rcx
+	add rsi, 4
+	sub rax, rsi
+	add rax, 5
+	mov dword [rcx], eax
+	pop rax
+        ;write: jmp rel32 (for "then" word)
+	mov byte [rax], 0xE9
+	add rax, 1
+	dpush rax ;push for "then" word
+	add rax, 4 ;space for address
+
+	mov [heapptr], rax
+	ret
+
+header immediate "T", then
+	mov rax, [heapptr]
+	;write rel32 for the "else" or "if" jump
+	dpop rcx
+	mov rsi, rcx
+	add rsi, 4
+	sub rax, rsi
+	mov dword [rcx], eax
+
+	ret
+	
+	
 
 _start: mov rbp, dstack ;init stack pointer
 
