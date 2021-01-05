@@ -2,6 +2,16 @@
 
 extern emit
 
+header "=", equals
+	dpop rax
+	dpop rcx
+	cmp rax, rcx
+	je .eq
+	dpush 0
+	ret
+.eq: 	dpush -1
+	ret
+
 header "+", sum
 	dpop rax
 	dpop rcx
