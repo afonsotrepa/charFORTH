@@ -102,7 +102,7 @@ header "^", bit_xor
 	dpush rax
 	ret
 
-header "!", logical_not
+header "~", logical_not
 	dpop rax
 	cmp rax, 0
 	je .t
