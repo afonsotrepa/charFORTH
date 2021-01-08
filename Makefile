@@ -6,5 +6,5 @@ a.out: primitives.o
 primitives.o: primitives.asm math.asm macros.mac
 	nasm -felf64 $< -o $@
 
-run: a.out
-	./a.out || read stdin
+run: a.out core.fs
+	cat core.fs - | ./a.out
