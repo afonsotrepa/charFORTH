@@ -1,0 +1,12 @@
+:L 91+ 91+ * 91+ *; \ length
+cA L8*a \ array of qwords
+
+:t sdrdrs ; \ 2dup
+
+\ do sieve for given number
+:S 0 1W 1+   t* d L1->I DDDX T   8*A+ 1s!   1R;
+
+\ print out all primes from 2 to L
+:P 2 1W   d 8*A+@ 1~=I d. dS T   1+d L-R;
+
+Pb
